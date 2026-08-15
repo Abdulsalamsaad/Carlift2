@@ -41,12 +41,21 @@ jobs:
           cp -r fresh_runner/android app_code/android
           sed -i 's/minSdkVersion.*/minSdkVersion 21/g' app_code/android/app/build.gradle
 
-      - name: Add Provider Package & Force Override Conflict
+      - name: Inject Dependencies & Overrides directly to pubspec
         run: |
-          flutter pub add provider
-          echo "" >> pubspec.yaml
-          echo "dependency_overrides:" >> pubspec.yaml
-          echo "  intl: ^0.19.0" >> pubspec.yaml
+          python3 -c "
+          with open('pubspec.yaml', 'r') as f:
+              content = f.read()
+
+          if 'provider:' not in content:
+              content = content.replace('dependencies:', 'dependencies:\n  provider: ^6.1.2')
+
+          if 'dependency_overrides:' not in content:
+              content += '\n\ndependency_overrides:\n  intl: ^0.19.0\n'
+
+          with open('pubspec.yaml', 'w') as f:
+              f.write(content)
+          "
         working-directory: ./app_code
 
       - name: Inject Provider Import Globally
