@@ -13,9 +13,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Unzip Project
+      - name: Unzip and Locate Project
         run: |
-          unzip -q app.zip -d app_code
+          mkdir -p temp_zip
+          unzip -q app.zip -d temp_zip
+          # البحث تلقائياً عن المجلد الذي يحتوي على pubspec.yaml
+          PROJECT_ROOT=$(dirname $(find temp_zip -name "pubspec.yaml" | head -n 1))
+          mkdir -p app_code
+          cp -r "$PROJECT_ROOT"/* app_code/
+          cp -r "$PROJECT_ROOT"/.* app_code/ 2>/dev/null || true
 
       - name: Set up Java
         uses: actions/setup-java@v3
