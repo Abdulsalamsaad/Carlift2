@@ -41,14 +41,15 @@ jobs:
           cp -r fresh_runner/android app_code/android
           sed -i 's/minSdkVersion.*/minSdkVersion 21/g' app_code/android/app/build.gradle
 
-      - name: Force Override Dependency Conflict
+      - name: Add Provider Package & Force Override Conflict
         run: |
+          flutter pub add provider
           echo "" >> pubspec.yaml
           echo "dependency_overrides:" >> pubspec.yaml
           echo "  intl: ^0.19.0" >> pubspec.yaml
         working-directory: ./app_code
 
-      - name: Auto-Fix Missing Provider Imports
+      - name: Inject Provider Import Globally
         run: |
           python3 -c "
           import os, glob
@@ -56,8 +57,7 @@ jobs:
           for filepath in glob.glob('lib/**/*.dart', recursive=True):
               with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
                   content = f.read()
-              if ('context.read' in content or 'context.watch' in content) and 'package:provider/provider.dart' not in content:
-                  print(f'Fixing import in: {filepath}')
+              if 'import \'package:provider/provider.dart\';' not in content:
                   with open(filepath, 'w', encoding='utf-8') as f:
                       f.write(\"import 'package:provider/provider.dart';\n\" + content)
           "
