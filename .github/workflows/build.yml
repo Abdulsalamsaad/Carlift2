@@ -34,6 +34,13 @@ jobs:
           flutter-version: '3.19.6'
           channel: 'stable'
 
+      - name: Regenerate Modern Android Runner
+        run: |
+          # إنشاء بيئة أندرويد حديثة وتطبيقها على المشروع تلقائياً
+          flutter create fresh_runner --org com.carlift.app
+          rm -rf app_code/android
+          cp -r fresh_runner/android app_code/android
+
       - name: Force Override Dependency Conflict
         run: |
           echo "" >> pubspec.yaml
@@ -46,11 +53,11 @@ jobs:
         working-directory: ./app_code
 
       - name: Build APK
-        run: flutter build apk --release --ignore-deprecation
+        run: flutter build apk --release
         working-directory: ./app_code
 
       - name: Build AAB
-        run: flutter build appbundle --release --ignore-deprecation
+        run: flutter build appbundle --release
         working-directory: ./app_code
 
       - name: Upload APK
