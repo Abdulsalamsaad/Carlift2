@@ -34,12 +34,14 @@ jobs:
           flutter-version: '3.19.6'
           channel: 'stable'
 
-      - name: Regenerate Modern Android Runner & Adjust Minimum SDK
+      - name: Regenerate Android Runner & Lock Package Name to com.carlift.app
         run: |
-          flutter create fresh_runner --org com.carlift.app
+          flutter create fresh_runner --org com.carlift --project-name app
           rm -rf app_code/android
           cp -r fresh_runner/android app_code/android
           sed -i 's/minSdkVersion.*/minSdkVersion 21/g' app_code/android/app/build.gradle
+          sed -i 's/applicationId.*/applicationId "com.carlift.app"/g' app_code/android/app/build.gradle
+          sed -i 's/namespace.*/namespace "com.carlift.app"/g' app_code/android/app/build.gradle
 
       - name: Inject Dependencies & Overrides directly to pubspec
         run: |
