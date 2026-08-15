@@ -17,7 +17,6 @@ jobs:
         run: |
           mkdir -p temp_zip
           unzip -q app.zip -d temp_zip
-          # البحث تلقائياً عن المجلد الذي يحتوي على pubspec.yaml
           PROJECT_ROOT=$(dirname $(find temp_zip -name "pubspec.yaml" | head -n 1))
           mkdir -p app_code
           cp -r "$PROJECT_ROOT"/* app_code/
@@ -33,6 +32,12 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+
+      - name: Fix Dependencies Conflict
+        run: |
+          # تحديث حزمة intl آلياً لتتوافق مع نسخة Flutter الحالية
+          flutter pub add intl:^0.19.0
+        working-directory: ./app_code
 
       - name: Get Dependencies
         run: flutter pub get
