@@ -36,7 +36,6 @@ jobs:
 
       - name: Regenerate Modern Android Runner
         run: |
-          # إنشاء بيئة أندرويد حديثة وتطبيقها على المشروع تلقائياً
           flutter create fresh_runner --org com.carlift.app
           rm -rf app_code/android
           cp -r fresh_runner/android app_code/android
@@ -52,8 +51,8 @@ jobs:
         run: flutter pub get
         working-directory: ./app_code
 
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Build APK with Detailed Logs
+        run: flutter build apk --release --verbose
         working-directory: ./app_code
 
       - name: Build AAB
