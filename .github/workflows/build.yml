@@ -39,7 +39,6 @@ jobs:
           flutter create fresh_runner --org com.carlift.app
           rm -rf app_code/android
           cp -r fresh_runner/android app_code/android
-          # رفع مستوىSdkVersion لتطابق المكتبات الحديثة
           sed -i 's/minSdkVersion.*/minSdkVersion 21/g' app_code/android/app/build.gradle
 
       - name: Force Override Dependency Conflict
@@ -54,11 +53,11 @@ jobs:
         working-directory: ./app_code
 
       - name: Build APK (Release)
-        run: flutter build apk --release --no-sound-null-safety
+        run: flutter build apk --release
         working-directory: ./app_code
 
       - name: Build AAB (Release)
-        run: flutter build appbundle --release --no-sound-null-safety
+        run: flutter build appbundle --release
         working-directory: ./app_code
 
       - name: Upload APK
