@@ -33,10 +33,11 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Fix Dependencies Conflict
+      - name: Force Override Dependency Conflict
         run: |
-          # تحديث حزمة intl آلياً لتتوافق مع نسخة Flutter الحالية
-          flutter pub add intl:^0.19.0
+          echo "" >> pubspec.yaml
+          echo "dependency_overrides:" >> pubspec.yaml
+          echo "  intl: ^0.19.0" >> pubspec.yaml
         working-directory: ./app_code
 
       - name: Get Dependencies
