@@ -34,11 +34,13 @@ jobs:
           flutter-version: '3.19.6'
           channel: 'stable'
 
-      - name: Regenerate Modern Android Runner
+      - name: Regenerate Modern Android Runner & Adjust Minimum SDK
         run: |
           flutter create fresh_runner --org com.carlift.app
           rm -rf app_code/android
           cp -r fresh_runner/android app_code/android
+          # رفع مستوىSdkVersion لتطابق المكتبات الحديثة
+          sed -i 's/minSdkVersion.*/minSdkVersion 21/g' app_code/android/app/build.gradle
 
       - name: Force Override Dependency Conflict
         run: |
@@ -51,12 +53,12 @@ jobs:
         run: flutter pub get
         working-directory: ./app_code
 
-      - name: Build APK with Detailed Logs
-        run: flutter build apk --release --verbose
+      - name: Build APK (Release)
+        run: flutter build apk --release --no-sound-null-safety
         working-directory: ./app_code
 
-      - name: Build AAB
-        run: flutter build appbundle --release
+      - name: Build AAB (Release)
+        run: flutter build appbundle --release --no-sound-null-safety
         working-directory: ./app_code
 
       - name: Upload APK
